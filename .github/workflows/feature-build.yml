@@ -16,6 +16,5 @@ jobs:
         with:
           java-version: '17'
           distribution: 'zulu'
-          cache: maven
       - name: Maven Build
         run: mvn clean install
