@@ -146,8 +146,7 @@
 					</image>
 					<docker>
 						<publishRegistry>
-							<url>${env.docker_hub_url}</url>
-							<username>${env.docker_hub_username}</username>
+							<!--suppress UnresolvedMavenProperty -->
 							<token>${env.docker_hub_token}</token>
 						</publishRegistry>
 					</docker>
