@@ -9,7 +9,7 @@ on:
 env:
   docker_hub_url: ${{ secrets.DOCKER_HUB_RHW_URL }}
   docker_hub_username: ${{ secrets.DOCKER_HUB_RHW_USERNAME }}
-  docker_hub_password: ${{ secrets.DOCKER_HUB_RHW_TOKEN }}
+  docker_hub_password: ${{ secrets.DOCKER_HUB_RHW_PASSWORD }}
 
 jobs:
   build:
