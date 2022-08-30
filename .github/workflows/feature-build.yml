@@ -18,7 +18,7 @@ jobs:
           distribution: 'zulu'
           cache: maven
       - name: Login to DockerHub
-        uses: docker/login-action@v3
+        uses: docker/login-action@v2
         with:
           username: ${{ secrets.DOCKER_HUB_RHW_USERNAME }}
           password: ${{ secrets.DOCKER_HUB_RHW_PASSWORD }}
