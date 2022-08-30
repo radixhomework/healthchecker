@@ -25,8 +25,8 @@ jobs:
           username: ${{ secrets.DOCKER_HUB_RHW_USERNAME }}
           password: ${{ secrets.DOCKER_HUB_RHW_TOKEN }}
       - name: Build and push
-      uses: docker/build-push-action@v3
-      with:
-        context: .
-        push: true
-        tags: user/app:latest
+        uses: docker/build-push-action@v3
+        with:
+          context: .
+          push: true
+          tags: user/app:latest
