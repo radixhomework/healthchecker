@@ -15,7 +15,7 @@
 	<version>0.1.0-SNAPSHOT</version>
 
 	<name>Health Checker</name>
-	<description>A Simple Native App For Health Checking Home Internet Connection</description>
+	<description>A Simple Native App For Health Checking URIs</description>
 
 	<properties>
 		<java.version>17</java.version>
