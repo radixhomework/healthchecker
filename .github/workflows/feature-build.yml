@@ -6,6 +6,11 @@ on:
   pull_request:
     branches: [ main ]
 
+env:
+  docker_hub_url: ${{ secrets.DOCKER_HUB_RHW_URL }}
+  docker_hub_username: ${{ secrets.DOCKER_HUB_RHW_USERNAME }}
+  docker_hub_token: ${{ secrets.DOCKER_HUB_RHW_TOKEN }}
+
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -18,20 +23,4 @@ jobs:
           distribution: 'zulu'
           cache: maven
       - name: Maven Build
-        run: mvn spring-boot:build-image \
-          -Dspring-boot.build-image.docker.publishRegistry.url="${{ secrets.DOCKER_HUB_RHW_URL }}" \
-          -Dspring-boot.build-image.docker.publishRegistry.username="${{ secrets.DOCKER_HUB_RHW_USERNAME }}" \
-          -Dspring-boot.build-image.docker.publishRegistry.token="${{ secrets.DOCKER_HUB_RHW_TOKEN }}"
-      #- name: Login to DockerHub
-      #  uses: docker/login-action@v1
-      #  with:
-      #    username: ${{ secrets.DOCKER_HUB_RHW_USERNAME }}
-      #    password: ${{ secrets.DOCKER_HUB_RHW_TOKEN }}
-      #- name: Get Image List
-      #  run: docker image ls -a
-      #- name: Build and push
-      #  uses: docker/build-push-action@v3
-      #  with:
-      #    context: .
-      #    push: true
-      #    tags: ${{ secrets.DOCKER_HUB_RHW_USERNAME }}/healthchecker:snapshot
+        run: mvn spring-boot:build-image

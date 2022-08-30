@@ -139,10 +139,18 @@
 					<classifier>${repackage.classifier}</classifier>
 					<image>
 						<builder>paketobuildpacks/builder:base</builder>
+						<publish>true</publish>
 						<env>
 							<BP_NATIVE_IMAGE>true</BP_NATIVE_IMAGE>
 						</env>
 					</image>
+					<docker>
+						<publishRegistry>
+							<url>${env.docker_hub_url}</url>
+							<username>${env.docker_hub_username}</username>
+							<token>${env.docker_hub_token}</token>
+						</publishRegistry>
+					</docker>
 				</configuration>
 			</plugin>
 
