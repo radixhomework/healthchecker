@@ -147,7 +147,9 @@
 					<docker>
 						<publishRegistry>
 							<!--suppress UnresolvedMavenProperty -->
-							<token>${env.docker_hub_token}</token>
+							<token>${env.docker_hub_username}</token>
+							<!--suppress UnresolvedMavenProperty -->
+							<token>${env.docker_hub_password}</token>
 						</publishRegistry>
 					</docker>
 				</configuration>
