@@ -18,4 +18,4 @@ jobs:
           distribution: 'zulu'
           cache: maven
       - name: Maven Build
-        run: mvn clean deploy
+        run: mvn clean install
