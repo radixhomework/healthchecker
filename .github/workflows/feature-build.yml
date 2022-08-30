@@ -24,9 +24,11 @@ jobs:
         with:
           username: ${{ secrets.DOCKER_HUB_RHW_USERNAME }}
           password: ${{ secrets.DOCKER_HUB_RHW_TOKEN }}
+      - name: Get Image List
+        run: docker image ls -a
       - name: Build and push
         uses: docker/build-push-action@v3
         with:
           context: .
           push: true
-          tags: user/app:latest
+          tags: ${{ secrets.DOCKER_HUB_RHW_USERNAME }}/healthchecker:snapshot
