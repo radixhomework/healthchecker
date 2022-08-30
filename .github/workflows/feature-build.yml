@@ -6,11 +6,6 @@ on:
   pull_request:
     branches: [ main ]
 
-env:
-  docker_hub_url: ${{ secrets.DOCKER_HUB_RHW_URL }}
-  docker_hub_username: ${{ secrets.DOCKER_HUB_RHW_USERNAME }}
-  docker_hub_password: ${{ secrets.DOCKER_HUB_RHW_PASSWORD }}
-
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -22,5 +17,10 @@ jobs:
           java-version: '17'
           distribution: 'zulu'
           cache: maven
+      - name: Login to DockerHub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKER_HUB_RHW_USERNAME }}
+          password: ${{ secrets.DOCKER_HUB_RHW_PASSWORD }}
       - name: Maven Build
         run: mvn spring-boot:build-image

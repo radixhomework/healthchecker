@@ -144,14 +144,6 @@
 							<BP_NATIVE_IMAGE>true</BP_NATIVE_IMAGE>
 						</env>
 					</image>
-					<docker>
-						<publishRegistry>
-							<!--suppress UnresolvedMavenProperty -->
-							<token>${env.docker_hub_username}</token>
-							<!--suppress UnresolvedMavenProperty -->
-							<token>${env.docker_hub_password}</token>
-						</publishRegistry>
-					</docker>
 				</configuration>
 			</plugin>
 
