@@ -35,6 +35,6 @@ jobs:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
         run: mvn -B verify org.sonarsource.scanner.maven:sonar-maven-plugin:sonar -Dsonar.projectKey=io.github.radixhomework:healthchecker
       - name: Build and Push Docker Image
-          run: |
-            docker build . --file Dockerfile --tag radixhomeworkhub/healthchecker:snapshot
-            docker push radixhomeworkhub/healthchecker:snapshot
+        run: |
+          docker build . --file Dockerfile --tag radixhomeworkhub/healthchecker:snapshot
+          docker push radixhomeworkhub/healthchecker:snapshot
