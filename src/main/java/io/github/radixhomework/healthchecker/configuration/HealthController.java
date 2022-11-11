@@ -12,7 +12,7 @@ import org.springframework.scheduling.annotation.Scheduled;
 @RequiredArgsConstructor
 public class HealthController {
 
-    HealthCheckService service;
+    private final HealthCheckService service;
 
     @Value("${health.check.uri}")
     private String uri;

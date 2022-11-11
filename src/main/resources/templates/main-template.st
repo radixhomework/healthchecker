@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="fr-FR">
 <head>
-    <title>HealthChecker Connection {{status}}</title>
+    <title>HealthChecker Connection $status$</title>
     <style>
         body {
             font-family: Calibri Light, Helvetica, Arial, sans-serif;
@@ -15,20 +15,27 @@
     Hello,
 </p>
 <p>
-    Connection <code>{{status}}</code>:
+    Connection <code>$status$</code>:
 </p>
 <table>
-    <tr><td>Host</td><td><code>{{host}}</code></td></tr>
-    <tr><td>Ping Start</td><td><code>{{begin}}</code></td></tr>
-    <tr><td>Ping Response</td><td><code>{{end}}</code></td></tr>
-    <tr><td>Http Status</td><td><code>{{httpStatus}}</code></td></tr>
-    <tr><td>Last success</td><td><code>{{lastSuccess}}</code></td></tr>
+    <tr>
+        <td>Host</td>
+        <td><code>$host$</code></td>
+    </tr>
+    <tr>
+        <td>Timestamp</td>
+        <td><code>$timestamp$</code></td>
+    </tr>
+    <tr>
+        <td>Status</td>
+        <td><code>$httpStatus$</code></td>
+    </tr>
 </table>
 <p>
     Message:
 </p>
 <p style="border: solid 1px black; padding: 10px">
-    <code>{{message}}</code>
+    <code>$message$</code>
 </p>
 <p>
     Regards,

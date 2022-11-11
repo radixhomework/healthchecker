@@ -1,16 +1,16 @@
 package io.github.radixhomework.healthchecker.service;
 
-import io.github.radixhomework.healthchecker.model.HealthCheckResult;
+import io.github.radixhomework.healthchecker.entity.HealthCheckEntity;
+import jakarta.mail.internet.MimeMessage;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
+import org.stringtemplate.v4.ST;
 
-import javax.mail.internet.MimeMessage;
 import java.io.InputStream;
-import java.util.Map;
 
 @Slf4j
 @Service
@@ -25,28 +25,34 @@ public class NotifyService {
     @Value("${spring.mail.to}")
     private String to;
 
-    @Value("${spring.mail.subject}")
-    private String subject;
+    private static final String SUBJECT_PATTERN = "[%s] Internet Connection";
 
-    public void notify(HealthCheckResult healthCheckResult) {
-        try (InputStream is = NotifyService.class.getClassLoader().getResourceAsStream("templates/main-template.html")) {
+    public void notify(HealthCheckEntity healthCheck) {
+        try (InputStream is = NotifyService.class.getClassLoader().getResourceAsStream("templates/main-template.st")) {
             MimeMessage message = mailSender.createMimeMessage();
             MimeMessageHelper helper = new MimeMessageHelper(message, true);
+
             helper.setFrom(from);
             helper.setTo(to.split(","));
-            helper.setSubject(fill(subject, healthCheckResult.getReplacementMap()));
-            helper.setText(fill(new String(is.readAllBytes()), healthCheckResult.getReplacementMap()), true);
+
+            helper.setSubject(String.format(SUBJECT_PATTERN, healthCheck.getStatus().getCode()));
+
+            ST body = new ST(new String(is.readAllBytes()), '$', '$');
+            body.add("status", healthCheck.getStatus().getCode());
+            body.add("host", healthCheck.getHost());
+            body.add("timestamp", healthCheck.getTimestamp());
+            if (healthCheck.getHttpStatus() != null) {
+                body.add("httpStatus", healthCheck.getHttpStatus().value());
+            } else {
+                body.add("httpStatus", "null");
+            }
+            body.add("message", healthCheck.getMessage());
+
+            helper.setText(body.render(), true);
+
             mailSender.send(message);
         } catch (Exception e) {
             log.error("Error while sending failure notification", e);
         }
-    }
-
-    private String fill(String toFill, Map<String, String> values) {
-        String clone = toFill;
-        for (Map.Entry<String, String> entry : values.entrySet()) {
-            clone = clone.replaceAll(String.format("\\{\\{%s\\}\\}", entry.getKey()), entry.getValue());
-        }
-        return clone;
     }
 }
