@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class DataService {
 
+    private final ValidationService validationService;
     private final HealthCheckRepository repository;
 
     public EnumStatus getLastStatus(String uri) {
@@ -24,6 +25,8 @@ public class DataService {
     }
 
     public void saveHealthCheckResult(HealthCheckEntity result) {
-        repository.save(result);
+        if (validationService.validate(result, "HealthCheck Result")) {
+            repository.save(result);
+        }
     }
 }

@@ -27,7 +27,7 @@ public class NotifyService {
 
     private static final String SUBJECT_PATTERN = "[%s] Internet Connection";
 
-    public void notify(HealthCheckEntity healthCheck) {
+    public boolean notify(HealthCheckEntity healthCheck) {
         try (InputStream is = NotifyService.class.getClassLoader().getResourceAsStream("templates/main-template.st")) {
             MimeMessage message = mailSender.createMimeMessage();
             MimeMessageHelper helper = new MimeMessageHelper(message, true);
@@ -51,8 +51,10 @@ public class NotifyService {
             helper.setText(body.render(), true);
 
             mailSender.send(message);
+            return true;
         } catch (Exception e) {
             log.error("Error while sending failure notification", e);
+            return false;
         }
     }
 }

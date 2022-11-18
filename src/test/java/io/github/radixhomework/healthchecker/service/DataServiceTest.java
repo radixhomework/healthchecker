@@ -1,40 +1,76 @@
 package io.github.radixhomework.healthchecker.service;
 
+import de.flapdoodle.embed.mongo.MongodExecutable;
+import de.flapdoodle.embed.mongo.MongodProcess;
 import io.github.radixhomework.healthchecker.entity.HealthCheckEntity;
 import io.github.radixhomework.healthchecker.enums.EnumStatus;
 import io.github.radixhomework.healthchecker.repository.HealthCheckRepository;
+import io.github.radixhomework.healthchecker.util.EmbedMongoDBUtils;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.EnumSource;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.test.context.SpringBootTest;
 
-import static org.mockito.Mockito.*;
-
+@SpringBootTest
 class DataServiceTest {
 
-    public static final String EXAMPLE_URI = "http://an-example.uri";
+    @Value("${health.check.uri}")
+    String urlToCheck;
+
+    @Value("${spring.data.mongodb.username}")
+    String dbUsername;
+
+    @Value("${spring.data.mongodb.password}")
+    String dbPassword;
+
+    @Autowired
+    DataService service;
+
+    @Autowired
+    HealthCheckRepository repository;
+
+    MongodExecutable mongodExecutable;
+    MongodProcess dbProcess;
+
+    @BeforeEach
+    void beforeEach() throws Exception {
+        mongodExecutable = EmbedMongoDBUtils.prepareExecutable("localhost", 27017, dbUsername, dbPassword);
+        dbProcess = mongodExecutable.start();
+        while (!dbProcess.isProcessRunning()) {
+            // wait until embed Mongodb is ready
+            Thread.currentThread().wait(100);
+        }
+    }
+
+    @AfterEach
+    void afterEach() throws Exception {
+        mongodExecutable.stop();
+        while (dbProcess.isProcessRunning()) {
+            // wait until embed Mongodb is stopped
+            Thread.currentThread().wait(100);
+        }
+    }
 
     @Test
-    void testGetLastStatusNoDataInDb() {
-        HealthCheckRepository mockRepository = mock(HealthCheckRepository.class);
-        when(mockRepository.findFirstByHostOrderByTimestampDesc(anyString())).thenReturn(null);
-        DataService service = new DataService(mockRepository);
-
-        EnumStatus given = service.getLastStatus(EXAMPLE_URI);
+    void getInitialStatusFromDatabase() {
+        EnumStatus given = service.getLastStatus(urlToCheck);
         Assertions.assertNotNull(given);
         Assertions.assertEquals(EnumStatus.UNKNOWN, given);
     }
 
     @ParameterizedTest
-    @EnumSource(value = EnumStatus.class, names = { "SUCCESS", "FAILURE" }) // six numbers
-    void testGetLastStatusDataFoundInDb(EnumStatus status) {
-        HealthCheckRepository mockRepository = mock(HealthCheckRepository.class);
-        HealthCheckEntity entity = new HealthCheckEntity(EXAMPLE_URI);
+    @EnumSource(value = EnumStatus.class, names = {"SUCCESS", "FAILURE"})
+    void testSaveAndGetLastStatusFromDatabase(EnumStatus status) {
+        HealthCheckEntity entity = new HealthCheckEntity(urlToCheck);
         entity.setStatus(status);
-        when(mockRepository.findFirstByHostOrderByTimestampDesc(anyString())).thenReturn(entity);
-        DataService service = new DataService(mockRepository);
+        service.saveHealthCheckResult(entity);
 
-        EnumStatus given = service.getLastStatus(EXAMPLE_URI);
+        EnumStatus given = service.getLastStatus(urlToCheck);
         Assertions.assertNotNull(given);
         Assertions.assertEquals(status, given);
     }
