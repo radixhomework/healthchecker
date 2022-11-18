@@ -5,6 +5,6 @@ import org.springframework.web.service.annotation.GetExchange;
 
 public interface HealthRestClient {
 
-    @GetExchange("/health-ping")
+    @GetExchange("/")
     ResponseEntity<String> ping();
 }
