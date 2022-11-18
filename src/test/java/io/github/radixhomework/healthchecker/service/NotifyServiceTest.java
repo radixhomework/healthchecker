@@ -14,7 +14,7 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.http.HttpStatusCode;
+import org.springframework.http.HttpStatus;
 
 import java.io.IOException;
 import java.time.Instant;
@@ -54,7 +54,7 @@ class NotifyServiceTest {
         entity.setStatus(EnumStatus.SUCCESS);
         entity.setMessage("HTTP 200 - OK");
         entity.setTimestamp(Instant.ofEpochMilli(100000));
-        entity.setHttpStatus(HttpStatusCode.valueOf(200));
+        entity.setHttpStatus(HttpStatus.valueOf(200));
 
         assertTrue(service.notify(entity));
 
