@@ -1,0 +1,29 @@
+health:
+  check:
+    uri: "https://this.is.a.fake.uri/"
+    api-key: 12345
+    delay: 10000
+    response: "test"
+spring:
+  mail:
+    host: localhost
+    port: 3025
+    username: "login"
+    password: "password"
+    from: From Example <from-example@domain.tld>
+    to: example@domain.tld
+  data:
+    mongodb:
+      uri: mongodb://localhost:27017/
+      database: healthdb
+      username: "username"
+      password: "password"
+logging:
+  level:
+    org:
+      springframework:
+        boot:
+          autoconfigure:
+            mongo:
+              embedded: off
+      mongodb: off
