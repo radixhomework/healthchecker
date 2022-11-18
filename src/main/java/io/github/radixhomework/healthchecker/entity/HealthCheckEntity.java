@@ -8,7 +8,7 @@ import lombok.EqualsAndHashCode;
 import lombok.Setter;
 import org.springframework.data.mongodb.core.mapping.TimeSeries;
 import org.springframework.data.mongodb.core.timeseries.Granularity;
-import org.springframework.http.HttpStatusCode;
+import org.springframework.http.HttpStatus;
 
 import java.time.Instant;
 
@@ -30,7 +30,7 @@ public class HealthCheckEntity {
     @EqualsAndHashCode.Exclude
     private Instant timestamp = Instant.now();
 
-    private HttpStatusCode httpStatus;
+    private HttpStatus httpStatus;
 
     private String message;
 

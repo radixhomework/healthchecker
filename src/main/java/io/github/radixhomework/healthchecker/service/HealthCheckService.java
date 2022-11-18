@@ -6,6 +6,7 @@ import io.github.radixhomework.healthchecker.enums.EnumStatus;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpClientErrorException;
@@ -26,7 +27,7 @@ public class HealthCheckService {
         HealthCheckEntity healthCheck = new HealthCheckEntity(uri);
         try {
             ResponseEntity<String> response = healthRestClient.ping();
-            healthCheck.setHttpStatus(response.getStatusCode());
+            healthCheck.setHttpStatus(HttpStatus.valueOf(response.getStatusCode().value()));
             if (response.getStatusCode().isError() || !expected.equals(response.getBody())) {
                 healthCheck.setStatus(EnumStatus.FAILURE);
                 healthCheck.setMessage(response.getBody());
@@ -38,7 +39,7 @@ public class HealthCheckService {
             }
         } catch (HttpClientErrorException hcee) {
             healthCheck.setStatus(EnumStatus.FAILURE);
-            healthCheck.setHttpStatus(hcee.getStatusCode());
+            healthCheck.setHttpStatus(HttpStatus.valueOf(hcee.getStatusCode().value()));
             log.warn("HealthCheck failure: {}", healthCheck);
         } catch (Exception e) {
             healthCheck.setStatus(EnumStatus.FAILURE);
