@@ -8,6 +8,7 @@ import jakarta.mail.MessagingException;
 import jakarta.mail.Multipart;
 import jakarta.mail.internet.MimeBodyPart;
 import jakarta.mail.internet.MimeMessage;
+import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
@@ -21,6 +22,7 @@ import java.time.Instant;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+@Slf4j
 @SpringBootTest
 class NotifyServiceTest {
 
@@ -63,6 +65,9 @@ class NotifyServiceTest {
         String body = new String(bodyPart.getInputStream().readAllBytes());
         String expected = new String(Thread.currentThread().getContextClassLoader()
                 .getResourceAsStream("templates/expected-ok.html").readAllBytes());
+
+        log.info("Expected: {}", expected);
+        log.info("Given: {}", body);
         assertTrue(body.contains(expected));
     }
 
