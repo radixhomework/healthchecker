@@ -22,7 +22,6 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpStatus;
 
 import java.io.IOException;
-import java.nio.charset.StandardCharsets;
 import java.time.Instant;
 import java.util.List;
 
@@ -85,8 +84,6 @@ class NotifyServiceTest {
         String expected = new String(Thread.currentThread().getContextClassLoader()
                 .getResourceAsStream("templates/mail-ok.html").readAllBytes());
 
-        log.info("Expected: {}", expected.getBytes(StandardCharsets.UTF_8));
-        log.info("Given: {}", body.getBytes(StandardCharsets.UTF_8));
         assertTrue(body.translateEscapes().contains(expected.translateEscapes()));
     }
 
