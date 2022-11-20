@@ -49,7 +49,7 @@ public class HealthCheckService {
             EnumStatus lastStatus = dataService.getLastStatus(uri);
             if (!lastStatus.equals(healthCheck.getStatus())) {
                 log.info("Status has changed, notifying");
-                notifyService.notify(healthCheck);
+                notifyService.notifyAll(healthCheck);
             }
             dataService.saveHealthCheckResult(healthCheck);
         }

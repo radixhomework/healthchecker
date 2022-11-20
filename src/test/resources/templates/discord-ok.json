@@ -1,0 +1,10 @@
+{"content":"**[Success]** Internet Connection
+```
+Host: http://localhost:8089/ping
+Timestamp: 1970-01-01T00:01:40Z
+Status: 200
+Message:
+----------
+HTTP 200 - OK
+----------
+```","username":"HealthChecker"}

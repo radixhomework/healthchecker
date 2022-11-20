@@ -1,9 +1,11 @@
 health:
   check:
-    uri: "https://this.is.a.fake.uri/"
+    uri: "http://localhost:8089/ping"
     api-key: 12345
     delay: 10000
-    response: "test"
+    response: "pong"
+    notification:
+      discord: "http://localhost:8089/discord"
 spring:
   mail:
     host: localhost
