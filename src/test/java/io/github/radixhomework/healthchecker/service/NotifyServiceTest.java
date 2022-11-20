@@ -67,7 +67,7 @@ class NotifyServiceTest {
     }
 
     @Test
-    void notifyWithHttpStatus() throws IOException, MessagingException {
+    void notifyMail() throws IOException, MessagingException {
         HealthCheckEntity entity = new HealthCheckEntity(uri);
         entity.setStatus(EnumStatus.SUCCESS);
         entity.setMessage("HTTP 200 - OK");
@@ -84,9 +84,7 @@ class NotifyServiceTest {
         String expected = new String(Thread.currentThread().getContextClassLoader()
                 .getResourceAsStream("templates/mail-ok.html").readAllBytes());
 
-        log.info("Expected: {}", expected);
-        log.info("Given: {}", body);
-        assertTrue(body.contains(expected));
+        assertTrue(body.translateEscapes().contains(expected.translateEscapes()));
     }
 
     @Test
@@ -105,7 +103,7 @@ class NotifyServiceTest {
         String body = allServeEvents.get(0).getRequest().getBodyAsString();
         String expected = new String(Thread.currentThread().getContextClassLoader()
                 .getResourceAsStream("templates/discord-ok.json").readAllBytes());
-        assertEquals(expected, body.translateEscapes());
+        assertEquals(expected.translateEscapes(), body.translateEscapes());
     }
 
 }
