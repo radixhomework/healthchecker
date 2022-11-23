@@ -74,4 +74,14 @@ class DataServiceTest {
         Assertions.assertNotNull(given);
         Assertions.assertEquals(status, given);
     }
+
+    @Test
+    void testSaveNotValid() {
+        HealthCheckEntity entity = new HealthCheckEntity(urlToCheck);
+        service.saveHealthCheckResult(entity);
+
+        EnumStatus given = service.getLastStatus(urlToCheck);
+        Assertions.assertNotNull(given);
+        Assertions.assertEquals(EnumStatus.UNKNOWN, given);
+    }
 }
