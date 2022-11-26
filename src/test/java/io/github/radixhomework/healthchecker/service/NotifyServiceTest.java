@@ -31,7 +31,6 @@ import static org.junit.jupiter.api.Assertions.*;
 
 @Slf4j
 @SpringBootTest
-//@WireMockTest(httpPort = 64001)
 class NotifyServiceTest {
 
     @Value("${health.check.uri}")
