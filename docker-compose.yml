@@ -1,0 +1,7 @@
+version: "3.8"
+services:
+  healthchecker:
+    container_name: healthchecker_container
+    build: .
+    volumes:
+      - /path/to/configuration/directory:/config

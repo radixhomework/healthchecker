@@ -1,0 +1,31 @@
+health:
+  check:
+    uri: "http://localhost:8089/ping"
+    api-key: 12345
+    delay: 10000
+    response: "pong"
+    notification:
+      discord: "http://localhost:8089/discord"
+spring:
+  mail:
+    host: localhost
+    port: 3025
+    username: "login"
+    password: "password"
+    from: From Example <from-example@domain.tld>
+    to: example@domain.tld
+  data:
+    mongodb:
+      uri: mongodb://localhost:27017/
+      database: healthdb
+      username: "username"
+      password: "password"
+logging:
+  level:
+    org:
+      springframework:
+        boot:
+          autoconfigure:
+            mongo:
+              embedded: off
+      mongodb: off

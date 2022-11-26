@@ -1,0 +1,18 @@
+[Unit]
+Description=Healthcheck Application
+After=network.target
+
+[Service]
+Type=notify
+User=radmin
+Group=radgrp
+WorkingDir=/opt/healthchecker/
+ExecStart=/opt/java/jdk17.0.5/bin/java \
+    -jar /opt/healthchecker/healthchecker.jar \
+    --spring.config.location=/opt/healthchecker/application.yml \
+    --login.config=/opt/healthchecker/logback.xml
+KillMode=process
+Restart=on-failure
+
+[Install]
+WantedBy=multi-user.target

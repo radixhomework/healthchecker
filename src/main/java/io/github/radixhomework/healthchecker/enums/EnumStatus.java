@@ -1,5 +1,14 @@
 package io.github.radixhomework.healthchecker.enums;
 
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
+
+@Getter
+@RequiredArgsConstructor
 public enum EnumStatus {
-    UNKNOWN, SUCCESS, ERROR
+    UNKNOWN("Unknown"),
+    SUCCESS("Success"),
+    FAILURE("Failure");
+
+    private final String code;
 }

@@ -1,60 +1,57 @@
 package io.github.radixhomework.healthchecker.service;
 
+import io.github.radixhomework.healthchecker.client.HealthRestClient;
+import io.github.radixhomework.healthchecker.entity.HealthCheckEntity;
 import io.github.radixhomework.healthchecker.enums.EnumStatus;
-import io.github.radixhomework.healthchecker.model.HealthCheckResult;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpClientErrorException;
-import org.springframework.web.client.RestTemplate;
-
-import java.time.Instant;
 
 @Slf4j
+@Service
 @RequiredArgsConstructor
 public class HealthCheckService {
 
-    private final RestTemplate restTemplate;
-    private final NotifyService notifyService;
+    private final HealthRestClient healthRestClient;
     private final DataService dataService;
+    private final NotifyService notifyService;
 
     @Value("${health.check.response}")
     private String expected;
 
     public void doCheck(String uri) {
-        // Begin timestamp is set when the object is instantiated
-        HealthCheckResult hcr = new HealthCheckResult(uri);
-        // Consider that the health check is not OK by default
+        HealthCheckEntity healthCheck = new HealthCheckEntity(uri);
         try {
-            ResponseEntity<String> response = restTemplate.getForEntity(uri, String.class);
-            hcr.setEnd(Instant.now());
-            hcr.setHttpStatus(response.getStatusCode());
+            ResponseEntity<String> response = healthRestClient.ping();
+            healthCheck.setHttpStatus(HttpStatus.valueOf(response.getStatusCode().value()));
             if (response.getStatusCode().isError() || !expected.equals(response.getBody())) {
-                hcr.setStatus(EnumStatus.ERROR);
-                hcr.setMessage(response.getBody());
-                log.warn("HealthCheck failure: {}", hcr);
+                healthCheck.setStatus(EnumStatus.FAILURE);
+                healthCheck.setMessage(response.getBody());
+                log.warn("HealthCheck failure: {}", healthCheck);
             } else {
-                hcr.setStatus(EnumStatus.SUCCESS);
-                hcr.setMessage("N/A");
-                log.info("HealthCheck success: {}", hcr);
+                healthCheck.setStatus(EnumStatus.SUCCESS);
+                healthCheck.setMessage("N/A");
+                log.info("HealthCheck success: {}", healthCheck);
             }
         } catch (HttpClientErrorException hcee) {
-            hcr.setStatus(EnumStatus.ERROR);
-            hcr.setEnd(Instant.now());
-            hcr.setHttpStatus(hcee.getStatusCode());
-            log.warn("HealthCheck failure: {}", hcr);
+            healthCheck.setStatus(EnumStatus.FAILURE);
+            healthCheck.setHttpStatus(HttpStatus.valueOf(hcee.getStatusCode().value()));
+            log.warn("HealthCheck failure: {}", healthCheck);
         } catch (Exception e) {
-            hcr.setStatus(EnumStatus.ERROR);
-            hcr.setEnd(Instant.now());
-            hcr.setMessage(e.getMessage());
-            log.error("HealthCheck error: {}", hcr);
-        }  finally {
-            EnumStatus lastStatus = dataService.getLastStatus(hcr.getHost());
-            dataService.saveHealthCheckResult(hcr);
-            if (!hcr.getStatus().equals(lastStatus)) {
-                notifyService.notify(hcr);
+            healthCheck.setStatus(EnumStatus.FAILURE);
+            healthCheck.setMessage(e.getMessage());
+            log.error("HealthCheck error: {}", healthCheck);
+        } finally {
+            EnumStatus lastStatus = dataService.getLastStatus(uri);
+            if (!lastStatus.equals(healthCheck.getStatus())) {
+                log.info("Status has changed, notifying");
+                notifyService.notifyAll(healthCheck);
             }
+            dataService.saveHealthCheckResult(healthCheck);
         }
     }
 }
